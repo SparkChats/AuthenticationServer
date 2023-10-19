@@ -23,9 +23,9 @@ services.AddMediatR(options =>
 
 services.AddDbContext<AuthenticationDbContext>(options =>
 {
-    string connectionString = builder.Configuration.GetConnectionString("SqlServer")
+    string connectionString = builder.Configuration.GetConnectionString("Postgres")
         ?? throw new Exception("No SqlServer connection string provided");
-    options.UseSqlServer(connectionString);
+    options.UseNpgsql(connectionString);
 });
 
 services.Configure<IdentitySettings>(builder.Configuration
