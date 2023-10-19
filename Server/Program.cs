@@ -1,55 +1,72 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
+using Sparkle.Identity;
+using Sparkle.Models;
+using Sparkle.Server;
 using System.Reflection;
 
-namespace Sparkle.Identity
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+IServiceCollection services = builder.Services;
+
+services.AddControllers();
+services.AddMvc(options =>
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-            IServiceCollection services = builder.Services;
+    options.EnableEndpointRouting = false;
+});
 
-            services.AddControllers();
-            services.AddMvc(options =>
-            {
-                options.EnableEndpointRouting = false;
-            });
+services.AddMediatR(options =>
+{
+    options.RegisterServicesFromAssembly(Assembly
+        .GetExecutingAssembly());
+});
 
-            services.AddMediatR(options =>
-            {
-                options.RegisterServicesFromAssembly(Assembly
-                    .GetExecutingAssembly());
-            });
+services.AddDbContext<AuthenticationDbContext>(options =>
+{
+    string connectionString = builder.Configuration.GetConnectionString("SqlServer")
+        ?? throw new Exception("No SqlServer connection string provided");
+    options.UseSqlServer(connectionString);
+});
 
+services.Configure<IdentitySettings>(builder.Configuration
+    .GetSection(IdentitySettings.SectionName));
 
-            services.Configure<IdentitySettings>(builder.Configuration
-                .GetSection(IdentitySettings.SectionName));
+services.AddIdentity<User, IdentityRole<Guid>>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = false;
+    options.Lockout.MaxFailedAccessAttempts = 5;
 
-            services.AddIdentityServer4WithConfiguration()
-                .AddDeveloperSigningCredential();
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireDigit = true;
+    options.Password.RequiredLength = 8;
 
-            services.ConfigureApplicationCookie(config =>
-            {
-                config.Cookie.Name = "Sparkle.Identity.Cookie";
-                config.LoginPath = "/Authentication/Login";
-                config.LogoutPath = "/Authentication/Logout";
-            });
+    options.User.RequireUniqueEmail = true;
+})
+    .AddEntityFrameworkStores<AuthenticationDbContext>()
+    .AddDefaultTokenProviders();
 
-            WebApplication app = builder.Build();
+services.AddIdentityServer4WithConfiguration()
+    .AddDeveloperSigningCredential();
 
-            app.MapControllers();
-            app.UseMvc();
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-                    Path.Combine(app.Environment.ContentRootPath, "wwwroot")),
-                RequestPath = "/wwwroot"
-            });
+services.ConfigureApplicationCookie(config =>
+{
+    config.Cookie.Name = "Sparkle.Identity.Cookie";
+    config.LoginPath = "/Authentication/Login";
+    config.LogoutPath = "/Authentication/Logout";
+});
 
-            app.UseIdentityServer();
+WebApplication app = builder.Build();
 
-            app.Run();
-        }
-    }
-}
+app.MapControllers();
+app.UseMvc();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(app.Environment.ContentRootPath, "wwwroot")),
+    RequestPath = "/wwwroot"
+});
+
+app.UseIdentityServer();
+
+app.Run();

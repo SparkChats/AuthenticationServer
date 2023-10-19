@@ -4,6 +4,7 @@ using IdentityServer4.Configuration;
 using IdentityServer4.Models;
 using IdentityServer4.Test;
 using Microsoft.Extensions.Options;
+using Sparkle.Models;
 using System.Security.Claims;
 
 namespace Sparkle.Identity
@@ -42,7 +43,8 @@ namespace Sparkle.Identity
              .AddInMemoryApiScopes(ApiScopes)
              .AddInMemoryApiResources(ApiResources)
              .AddInMemoryClients(Clients)
-             .AddTestUsers(TestUsers);
+             .AddTestUsers(TestUsers)
+             .AddAspNetIdentity<User>();
 
             return builder;
         }
