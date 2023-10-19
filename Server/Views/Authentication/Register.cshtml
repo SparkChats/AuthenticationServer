@@ -1,0 +1,47 @@
+﻿@using Sparkle.Identity.Requests;
+@model RegistrationRequest
+<head>
+    <meta charset="UTF-8">
+    <title>Sparkle - Register</title>
+    <link href=@Url.Content("~/wwwroot/styles/app.css") rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div class="screen-container">
+    <div class="panel" style="width: 600px; height: 763px;">
+        <h1>Create an account</h1>
+        <h3>Imagine a place...</h3>
+        <form asp-controller="Authentication" asp-action="Register" method="post">
+            <input type="hidden" asp-for="ReturnUrl"/>
+            <div class="input-container">
+                <label asp-for="Username"></label>
+                <input asp-for="Username" class="input"/>
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+            <div class="input-container">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" class="input"/>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="input-container">
+                <label asp-for="Password"></label>
+                <input asp-for="Password" class="input"/>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="input-container">
+                <label asp-for="ConfirmPassword"></label>
+                <input asp-for="ConfirmPassword" class="input"/>
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="input-container">
+                <input type="submit" value="Register">
+            </div>
+            <div class="input-container">
+                @Html.ValidationSummary(true, String.Empty, new { @class = "text-danger" })
+            </div>
+            <div class="input-container">
+                <a asp-controller="Authentication" asp-action="Login" asp-route-returnUrl="@Model.ReturnUrl">Already registered?</a>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
