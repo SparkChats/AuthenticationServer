@@ -1,4 +1,4 @@
-﻿using IdentityServer4.Services;
+﻿using Duende.IdentityServer.Services;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Sparkle.Identity.Requests;
@@ -21,7 +21,7 @@ namespace Sparkle.Identity.RequestHandlers
         public async Task<string?> Handle(LogoutRequest request, CancellationToken cancellationToken)
         {
             await _signInManager.SignOutAsync();
-            IdentityServer4.Models.LogoutRequest logoutRequest =
+            Duende.IdentityServer.Models.LogoutRequest logoutRequest =
                 await _interactionService.GetLogoutContextAsync(request.LogoutId);
             return logoutRequest.PostLogoutRedirectUri;
         }

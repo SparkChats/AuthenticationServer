@@ -1,8 +1,8 @@
-﻿using IdentityModel;
-using IdentityServer4;
-using IdentityServer4.Configuration;
-using IdentityServer4.Models;
-using IdentityServer4.Test;
+﻿using Duende.IdentityServer;
+using Duende.IdentityServer.Configuration;
+using Duende.IdentityServer.Models;
+using Duende.IdentityServer.Test;
+using IdentityModel;
 using Microsoft.Extensions.Options;
 using Sparkle.Models;
 using System.Security.Claims;
@@ -23,13 +23,16 @@ namespace Sparkle.Identity
         }
         public static IIdentityServerBuilder AddIdentityServer4(this IServiceCollection services)
         {
-            return services.AddIdentityServer();
+            return services.AddIdentityServer(options =>
+            {
+                options.Endpoints.EnableTokenEndpoint = true;
+            });
         }
 
         /// <summary>
         /// Adds and configures IdentityServer with in-memory configuration
         /// </summary>
-        public static IIdentityServerBuilder AddIdentityServer4WithConfiguration(this IServiceCollection services,
+        public static IIdentityServerBuilder AddIdentityServerWithConfiguration(this IServiceCollection services,
             Action<IdentityServerOptions>? options = null)
         {
             _identitySettings = services.BuildServiceProvider()
@@ -77,30 +80,28 @@ namespace Sparkle.Identity
                 }
           };
         private static IEnumerable<Client> Clients =>
-            new List<Client>
-            {
-                new() {
-                    ClientId = "react-client",
-                    ClientSecrets = { new Secret("react-client-super-secret") },
-                    AllowedGrantTypes = GrantTypes.Code,
-                    RedirectUris = { "http://localhost:3000/signin-oidc" },
-                    PostLogoutRedirectUris = { "http://localhost:3000/signout-oidc" },
+    new List<Client>
+    {
+        new() {
+            ClientId = "react-client",
+            ClientSecrets = { new Secret(_identitySettings.ClientSecret) },
+            AllowedGrantTypes = GrantTypes.Code,
+                    RedirectUris = _identitySettings.RedirectUris,
+                    PostLogoutRedirectUris = _identitySettings.PostLogoutRedirectUris,
                     AllowedCorsOrigins  = { "http://localhost:3000" },
-                    AllowedScopes = {
-                        IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Profile,
-                        "roles",
-                        "MessageApi"
-                    },
-                    RequireConsent = false,
-                    RequireClientSecret = false,
-                    //infinitely long access token (not recommended in production)
-                    AccessTokenLifetime = _identitySettings.AccessTokenLifetime
-                }
-            };
+            AllowedScopes = {
+                IdentityServerConstants.StandardScopes.OpenId,
+                IdentityServerConstants.StandardScopes.Profile,
+                "roles",
+                "MessageApi"
+            },
+            RequireClientSecret = false,
+            AccessTokenLifetime = _identitySettings.AccessTokenLifetime
+        }
+    };
         private static List<TestUser> TestUsers =>
-            new()
-            {
+    new()
+    {
                 new TestUser
                 {
                     SubjectId = "1",
@@ -113,6 +114,6 @@ namespace Sparkle.Identity
                         new("family_name", "User")
                     }
                 }
-            };
+    };
     }
 }
