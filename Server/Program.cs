@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
@@ -46,20 +47,22 @@ services.AddIdentity<User, IdentityRole<Guid>>(options =>
     .AddEntityFrameworkStores<AuthenticationDbContext>()
     .AddDefaultTokenProviders();
 
-services.AddIdentityServer4WithConfiguration()
-    .AddDeveloperSigningCredential();
-
-services.ConfigureApplicationCookie(config =>
+services.AddIdentityServerWithConfiguration(options =>
 {
-    config.Cookie.Name = "Sparkle.Identity.Cookie";
-    config.LoginPath = "/Authentication/Login";
-    config.LogoutPath = "/Authentication/Logout";
+    options.IssuerUri = "https://sparkle.net.ua/auth";
+    options.Endpoints.EnableTokenEndpoint = true;
 });
 
-WebApplication app = builder.Build();
+services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.Name = "Sparkle.Identity.Cookie";
+    options.LoginPath = "/Authentication/Login";
+    options.LogoutPath = "/Authentication/Logout";
+});
 
-app.MapControllers();
-app.UseMvc();
+
+
+WebApplication app = builder.Build();
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(
@@ -67,6 +70,19 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/wwwroot"
 });
 
+app.UseHttpsRedirection();
+
 app.UseIdentityServer();
+app.MapControllers();
+
+app.UseMvc();
+ForwardedHeadersOptions fordwardedHeaderOptions = new()
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+};
+fordwardedHeaderOptions.KnownNetworks.Clear();
+fordwardedHeaderOptions.KnownProxies.Clear();
+
+app.UseForwardedHeaders(fordwardedHeaderOptions);
 
 app.Run();
