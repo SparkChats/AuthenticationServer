@@ -7,6 +7,7 @@ namespace Sparkle.Identity.Requests
     public record RegistrationRequest : IRequest<IdentityResult>
     {
         [Required]
+        [RegularExpression(@"^[a-z]+$", ErrorMessage = "Username must contain only lowercase letters.")]
         public string Username { get; init; }
         [Required]
         [DataType(DataType.EmailAddress)]
