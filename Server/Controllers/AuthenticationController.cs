@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Sparkle.Identity.Requests;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
@@ -10,10 +11,12 @@ namespace Sparkle.Identity.Controllers
     public class AuthenticationController : Controller
     {
         private readonly IMediator _mediator;
+        private readonly IdentitySettings _settings;
 
-        public AuthenticationController(IMediator mediator)
+        public AuthenticationController(IMediator mediator, IOptions<IdentitySettings> options)
         {
             _mediator = mediator;
+            _settings = options.Value;
         }
 
         [HttpGet("[action]")]
@@ -94,7 +97,7 @@ namespace Sparkle.Identity.Controllers
         {
             string? returnUrl = await _mediator
                 .Send(new LogoutRequest { LogoutId = logoutId });
-            returnUrl ??= "http://localhost:3000";
+            returnUrl ??= _settings.ReturnUrl;
 
             return Redirect(returnUrl);
         }
