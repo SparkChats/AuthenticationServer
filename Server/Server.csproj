@@ -17,6 +17,10 @@
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.11" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="wwwroot\images" />
+	</ItemGroup>
+
 	<ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="https://json.schemastore.org/appsettings.json" /></VisualStudio></ProjectExtensions>
 
 </Project>

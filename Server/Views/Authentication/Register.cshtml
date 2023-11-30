@@ -7,7 +7,7 @@
 </head>
 <body>
 <div class="screen-container">
-    <div class="panel" style="width: 600px; height: 763px;">
+    <div class="panel" style="width: 600px; min-height: 763px;">
         <h1>Create an account</h1>
         <h3>Imagine a place...</h3>
         <form asp-controller="Authentication" asp-action="Register" method="post">
@@ -35,10 +35,10 @@
             <div class="input-container">
                 <input type="submit" value="Register">
             </div>
-            <div class="input-container">
+            <div class="input-container text-danger">
                 @Html.ValidationSummary(true, String.Empty, new { @class = "text-danger" })
             </div>
-            <div class="input-container">
+            <div class="input-container bottomText">
                 <a asp-controller="Authentication" asp-action="Login" asp-route-returnUrl="@Model.ReturnUrl">Already registered?</a>
             </div>
         </form>

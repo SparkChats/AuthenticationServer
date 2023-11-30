@@ -3,7 +3,6 @@
     font-family: 'Roboto', sans-serif;
     padding: 0;
     margin: 0;
-    color: white;
     font-weight: 400;
 }
 
@@ -11,6 +10,9 @@ a {
     color: #AB701E;
     font-style: normal;
     cursor: pointer;
+}
+.bottomText {
+    margin-bottom: 30px;
 }
 input:focus {
     outline: none;
@@ -22,6 +24,7 @@ input:focus {
     background: #D9D9D9;
     width: 100%;
     height: 100vh;
+    background: url("../images/Background.png");
 }
 
 .panel {
@@ -38,7 +41,7 @@ h1 {
     margin-top: 40px;
 }
 h3 {
-    /*color: white; TODO*/
+    color: white;
     font-size: 20px;
     margin-top: 10px;
     margin-bottom: 6px;
@@ -50,7 +53,7 @@ h3 {
     flex-direction: column;
     align-items: start;
     font-size: 18px;
-    /*color: white; TODO*/
+    color: white;
 }
 .input-container > label {
     margin-bottom: 10px;
@@ -69,6 +72,9 @@ h3 {
     background: #F1930F;
     color: #232323;
     font-weight: 700; /*TODO*/
+}
+input {
+    color: white;
 }
 .text-danger {
     color: #da2a00; /*TODO*/
