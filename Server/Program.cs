@@ -5,6 +5,7 @@ using Microsoft.Extensions.FileProviders;
 using Sparkle.Identity;
 using Sparkle.Models;
 using Sparkle.Server;
+using Sparkle.Server.Common.Options;
 using System.Reflection;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -31,6 +32,8 @@ services.AddDbContext<AuthenticationDbContext>(options =>
 
 services.Configure<IdentitySettings>(builder.Configuration
     .GetSection(IdentitySettings.SectionName));
+
+services.Configure<ApiOptions>(builder.Configuration.GetSection(ApiOptions.SectionName));
 
 services.AddIdentity<User, IdentityRole<Guid>>(options =>
 {

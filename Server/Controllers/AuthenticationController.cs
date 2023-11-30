@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Sparkle.Identity.Requests;
+using Sparkle.Server.Common.Options;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace Sparkle.Identity.Controllers

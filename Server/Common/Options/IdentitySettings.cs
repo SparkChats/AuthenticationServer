@@ -1,4 +1,4 @@
-namespace Sparkle.Identity
+namespace Sparkle.Server.Common.Options
 {
     public class IdentitySettings
     {

@@ -5,6 +5,7 @@ using Duende.IdentityServer.Test;
 using IdentityModel;
 using Microsoft.Extensions.Options;
 using Sparkle.Models;
+using Sparkle.Server.Common.Options;
 using System.Security.Claims;
 
 namespace Sparkle.Identity
